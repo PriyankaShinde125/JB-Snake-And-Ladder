@@ -5,47 +5,69 @@ public class SnakeAndLadderSimulator {
     public static final int LADDER = 1;
     public static final int SNAKE = 2;
     public static final int WINNING_POSITION = 100;
-    int currentPosition = PLAYER_START_POSITION;
-    int diceCount = 0;
-    ArrayList<Integer> positionAtDice;
+    int player1Position = PLAYER_START_POSITION;
+    int player2Position = PLAYER_START_POSITION;
 
     public static void main(String[] args) {
 
         System.out.println("Welcome to Snake & Ladder Simulator");
 
         SnakeAndLadderSimulator simulatorObj = new SnakeAndLadderSimulator();
-        simulatorObj.positionAtDice = new ArrayList<>();
 
-        while (simulatorObj.currentPosition < WINNING_POSITION) {
-            simulatorObj.play();
-        }
-
-        for (int dice = 0; dice < simulatorObj.positionAtDice.size(); dice++) {
-            System.out.println("Dice = " + dice + " -> " + simulatorObj.positionAtDice.get(dice));
+        while (simulatorObj.player1Position <= WINNING_POSITION && simulatorObj.player2Position <= WINNING_POSITION) {
+            if (simulatorObj.player1Position == WINNING_POSITION) {
+                System.out.println("Player 1 is winner");
+                break;
+            } else if (simulatorObj.player2Position == WINNING_POSITION) {
+                System.out.println("Player 2 is winner");
+                break;
+            } else {
+                simulatorObj.player1Position = simulatorObj.player1Play(simulatorObj.player1Position, "Player1");
+                simulatorObj.player2Position = simulatorObj.player2Play(simulatorObj.player2Position, "Player2");
+            }
         }
     }
 
-    public void play() {
+    private int player1Play(int player1Position, String playerName) {
 
         int randomDie = (int) Math.floor(Math.random() * 6 + 1);
         int move = (int) Math.floor(Math.random() * 3);
 
         switch (move) {
             case LADDER:
-                currentPosition = currentPosition + randomDie;
-                if (currentPosition > WINNING_POSITION)
-                    currentPosition = currentPosition - randomDie;
+                player1Position += randomDie;
+                if (player1Position > WINNING_POSITION)
+                    player1Position = player1Position - randomDie;
                 break;
             case SNAKE:
-                if (currentPosition - randomDie < PLAYER_START_POSITION)
-                    currentPosition = PLAYER_START_POSITION;
-                else
-                    currentPosition = currentPosition - randomDie;
+                player1Position = Math.max(player1Position - randomDie, PLAYER_START_POSITION);
                 break;
             default:
                 break;
         }
-
-        positionAtDice.add(currentPosition);
+        System.out.println(playerName + " is at " + player1Position);
+        return player1Position;
     }
+
+    private int player2Play(int player2Position, String playerName) {
+
+        int randomDie = (int) Math.floor(Math.random() * 6 + 1);
+        int move = (int) Math.floor(Math.random() * 3);
+
+        switch (move) {
+            case LADDER:
+                player2Position = player2Position + randomDie;
+                if (player2Position > WINNING_POSITION)
+                    player2Position = player2Position - randomDie;
+                break;
+            case SNAKE:
+                player2Position = Math.max(player2Position - randomDie, PLAYER_START_POSITION);
+                break;
+            default:
+                break;
+        }
+        System.out.println(playerName + " is at " + player2Position);
+        return player2Position;
+    }
+
 }
